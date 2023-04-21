@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.App {
+  width: 100vw;
+  min-height: 100vh;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.App #games {
+  width: 80%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  grid-auto-rows: 50%;
+  transition: all 0.5s ease-in-out;
+}
+.App #games > * {
+  border: 1px solid black;
+  cursor: pointer;
+}
+.App #games > * video {
+  width: 100%;
+  height: 100%;
+}
+.App #games > * > h1 {
+  background-color: #fff;
+}
+.App #games > *.active > i {
+  display: block;
+}
+.App #games > * > i {
+  font-size: 2rem;
+  color: #222;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  display: none;
+  z-index: 10000;
+}
+.App #games > * > i:hover {
+  color: #666;
+}
+.App #games.active {
+  width: 100%;
+}
+.App #user-credentials {
+  width: 0vw;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease-in-out;
+}
+.App #user-credentials .games-history {
+  transform: translate(100%);
+  width: 100%;
+  padding: 0 1rem;
+  transition: inherit;
+  overflow-y: hidden;
+}
+.App #user-credentials .games-history .game-header {
+  font: 1.5rem/1.5 sans-serif;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+}
+.App #user-credentials .games-history .game-header i {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translate(0, -50%);
+  font-size: 1.5rem;
+  color: #1575d5;
+  transition: all 0.3s ease-in-out;
+}
+.App #user-credentials .games-history .game-header i[class*=down] {
+  display: inline-block;
+}
+.App #user-credentials .games-history .game-header i[class*=up] {
+  display: none;
+}
+.App #user-credentials .games-history .game-header.active i[class*=down] {
+  display: none;
+}
+.App #user-credentials .games-history .game-header.active i[class*=up] {
+  display: inline-block;
+}
+.App #user-credentials .games-history .game-data {
+  height: 0;
+  width: 100%;
+  padding: 0 0.5rem;
+  overflow-y: hidden;
+  transition: inherit;
+}
+.App #user-credentials .games-history .game-data > div {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.App #user-credentials #resize-credentials {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-100%, -50%);
+  transition: all 0.3s ease-in-out;
+}
+.App #user-credentials #resize-credentials span {
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: #fff;
+  padding: 5px;
+  box-shadow: -10px 0 5px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 40% 0 0 40%;
+  transition: all 0.3s ease-in-out;
+  color: #1575d5;
+}
+.App #user-credentials #resize-credentials span:hover {
+  color: #fff;
+  background-color: #1575d5;
+}
+.App #user-credentials #resize-credentials span i[class*=left] {
+  display: inline-block;
+}
+.App #user-credentials #resize-credentials span i[class*=right] {
+  display: none;
+}
+.App #user-credentials.active {
+  width: 20vw;
+}
+.App #user-credentials.active .games-history {
+  transform: translateX(0%);
+  overflow-y: auto;
+}
+.App #user-credentials.active #resize-credentials {
+  transform: translate(0, -50%);
+}
+.App #user-credentials.active #resize-credentials span i[class*=left] {
+  display: none;
+}
+.App #user-credentials.active #resize-credentials span i[class*=right] {
+  display: inline-block;
+}/*# sourceMappingURL=App.css.map */

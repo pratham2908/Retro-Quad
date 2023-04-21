@@ -1,0 +1,240 @@
+import { useEffect } from "react";
+import { useContext } from "react";
+import { DataContext } from "./DataContext";
+
+const Snake = ({ isActive }) => {
+    const { updateGame } = useContext(DataContext);
+    useEffect(() => {
+        if (isActive) {
+            const container = document.querySelector("#snake-game");
+            const startBtnSnake = document.querySelector("#start-btn");
+            const sound = document.querySelector("#eat");
+            const playAgainBtn = document.querySelector("#snake-game-over button");
+            let speed = 3;
+            let score = 0;
+            const boxes = [];
+            const snake = [];
+            let interval = 0;
+            let dir = "right";
+            const dirVal = { right: 0, down: 90, left: 180, up: 270 };
+            let totalRows = 0;
+            let totalCols = 0;
+
+            playAgainBtn.addEventListener("click", () => {
+                startBtnSnake.parentElement.parentElement.classList.add('active');
+                startBtnSnake.parentElement.parentElement.classList.remove('game-over');
+                container.innerHTML = "";
+                boxes.length = 0;
+                snake.length = 0;
+                score = 0;
+                dir = "right";
+                document.querySelector("#score").textContent = score;
+            });
+
+            function createGame() {
+                totalRows = Math.floor(container.clientHeight / 50);
+                totalCols = Math.floor(container.clientWidth / 50);
+                container.style.height = `${totalRows * 50}px`;
+                container.style.width = `${totalCols * 50}px`;
+                for (let i = 0; i < totalRows; i++) {
+                    const row = [];
+                    for (let j = 0; j < totalCols; j++) {
+                        const box = document.createElement("div");
+                        if (i == 6 && j < 10 && j > 6) {
+                            box.classList.add("snake");
+                            snake.unshift(box);
+                        }
+
+                        if (i == 6 && j == 10) {
+                            box.classList.add("head-right", "snake");
+                            snake.unshift(box);
+                        }
+                        const apple = document.createElement("i");
+                        apple.classList.add("fas", "fa-apple-whole");
+                        box.appendChild(apple);
+                        box.classList.add("box");
+                        container.appendChild(box);
+                        row.push(box);
+                    }
+                    boxes.push(row);
+                }
+
+
+            }
+
+            function moveSnake() {
+                const head = snake[0];
+                const row = Math.floor(Array.from(head.parentNode.children).indexOf(head) / totalCols);
+                const col = boxes[row].indexOf(head);
+                let next = 0;
+
+                switch (dir) {
+                    case "right":
+                        next = boxes[row] ? boxes[row][col + 1] : null;
+                        break;
+                    case "left":
+                        next = boxes[row] ? boxes[row][col - 1] : null;
+                        break;
+                    case "up":
+                        next = boxes[row - 1] ? boxes[row - 1][col] : null;
+                        break;
+                    case "down":
+                        next = boxes[row + 1] ? boxes[row + 1][col] : null;
+                        break;
+                    default:
+                        break;
+
+                }
+
+                if (!next || next.classList.contains("snake")) {
+                    gameOver();
+                    return;
+                }
+
+
+                head.classList.remove(`head-${dir}`);
+                next.classList.add(`head-${dir}`, "snake")
+                snake.unshift(next);
+                if (next.classList.contains("apple")) {
+                    next.classList.remove("apple");
+                    score += 1;
+                    sound.volume = 1;
+                    sound.play();
+                    document.querySelector("#score").textContent = score;
+                    createApple();
+                    return;
+                }
+                const last = snake.pop();
+                last.classList.remove("snake");
+            }
+
+            function startGame() {
+                moveSnake();
+                interval = setInterval(moveSnake, 100 * (4 - speed));
+            }
+
+            function gameOver() {
+                clearInterval(interval);
+                document.querySelector('#snake-game-over h4 span').textContent = score;
+                startBtnSnake.parentElement.parentElement.classList.add("game-over", "active");
+                window.removeEventListener("keydown", enterDirection);
+                updateGame("snake", { score: score, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() });
+            }
+
+            function createApple() {
+                const row = Math.floor(Math.random() * totalRows);
+                const col = Math.floor(Math.random() * totalCols);
+                const apple = boxes[row][col];
+                if (apple.classList.contains("snake")) {
+                    createApple();
+                    return;
+                }
+
+                apple.classList.add("apple");
+
+            }
+
+            function enterDirection(e) {
+                if (!e.key.includes("Arrow")) return;
+                if (e.key.split("Arrow")[1].toLowerCase() == dir) return;
+                const value = e.key.split("Arrow")[1].toLowerCase();
+                if ((dirVal[value] - dirVal[dir]) % 180 != 0) {
+                    changeDirection(value);
+                }
+            }
+
+            function changeDirection(value) {
+                dir = value;
+                const head = snake[0];
+                head.classList.forEach((c) => {
+                    if (c.includes("head")) {
+                        head.classList.remove(c);
+                    }
+                })
+                head.classList.add(`head-${value}`);
+                clearInterval(interval);
+                startGame();
+            }
+
+            const buttonsDifficulty = document.querySelectorAll(".difficulty button");
+
+            buttonsDifficulty.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    buttonsDifficulty.forEach((btn) => {
+                        btn.classList.remove("selected");
+                    })
+                    btn.classList.add("selected");
+                    speed = btn.textContent.toLowerCase() == "easy" ? 1 : btn.textContent.toLowerCase() == "medium" ? 2 : 3;
+                })
+            })
+
+            startBtnSnake.addEventListener("click", () => {
+                startBtnSnake.parentElement.parentElement.classList.remove('active');
+                sound.volume = 0;
+                sound.play();
+                createGame();
+                createApple();
+                buttonsDifficulty.forEach((btn) => {
+                    btn.classList.remove("selected");
+                })
+                setTimeout(() => {
+                    window.addEventListener("keydown", enterDirection)
+                    startGame();
+                }, 200);
+            })
+
+            window.addEventListener("keydown", (e) => {
+                if (e.key == "Enter" || e.key == " ") {
+                    startBtnSnake.click();
+                }
+            })
+
+
+        }
+    }, [isActive])
+
+    if (isActive) {
+        return (
+            <div id="snake-container">
+                <div className="score">
+                    <h2>Score</h2>
+                    <p id="score">0</p>
+                </div>
+                <div id="snake-game"></div>
+                <div className="modal active">
+                    <div className="start-game">
+                        <h1>Welcome to Snake</h1>
+                        <div className="choose-difficulty">
+                            <h2>Choose Difficulty</h2>
+                            <div className="difficulty">
+                                <button>Easy</button>
+                                <button>Medium</button>
+                                <button>Hard</button>
+                            </div>
+                        </div>
+                        <p>
+                            Use the
+                            <img src="arrow-keys-2.png" alt="arrow-keys" /> keys to move the snake
+                        </p>
+                        <button id="start-btn">Start Game</button>
+                    </div>
+                    <div id="snake-game-over">
+                        <h2>Game Over</h2>
+                        <h4>Your Score was <span></span></h4>
+                        <button >Play Again</button>
+                    </div>
+                </div>
+                <audio id="eat" src="eat.mp3"></audio>
+            </div>
+        )
+    } else {
+        return (
+            <div id="snake-container">
+                <video src="snake.mp4" autoPlay loop muted ></video>
+            </div>
+        )
+    }
+}
+
+
+export default Snake;
