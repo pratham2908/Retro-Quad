@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
   height: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 
   #games {
@@ -50,7 +50,7 @@ body {
         right: 20px;
         top: 20px;
         display: none;
-        z-index: 10000;
+        z-index: 10;
 
         &:hover {
           color: #666;
@@ -59,25 +59,94 @@ body {
     }
 
     &.active {
-      width: 100%;
+      width: 100vw;
     }
   }
 
   #user-credentials {
-    width: 0vw;
+    width: 20vw;
     height: 100%;
-    position: relative;
+    right: -20%;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     transition: all 0.5s ease-in-out;
+    z-index: 5;
+
+    .register,
+    .login {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 100%;
+      gap: 20px;
+
+      &.active {
+        display: flex;
+      }
+
+      > h1 {
+        text-transform: capitalize;
+        // simple sober yet cool font family
+        font-family: "Roboto", sans-serif;
+      }
+
+      form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+        width: 80%;
+
+        input {
+          width: 100%;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #222;
+          outline: none;
+          transition: all 0.3s ease-in-out;
+
+          &:focus {
+            border: 1px solid #1575d5;
+          }
+        }
+
+        button {
+          width: 100%;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #222;
+          cursor: pointer;
+          outline: none;
+          background-color: #1575d5;
+          color: #fff;
+          transition: all 0.3s ease-in-out;
+
+          &:hover {
+            background-color: #fff;
+            color: #1575d5;
+          }
+        }
+      }
+
+      .warning {
+        color: red;
+        font-size: 1rem;
+        text-transform: uppercase;
+        font-family: sans-serif;
+      }
+    }
 
     .games-history {
-      transform: translate(100%);
       width: 100%;
       padding: 0 1rem;
       transition: inherit;
-      overflow-y: hidden;
+      overflow-y: auto;
+
       .game-header {
         font: 1.5rem/1.5 sans-serif;
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
@@ -86,6 +155,7 @@ body {
         border-radius: 10px;
         text-align: center;
         position: relative;
+        text-transform: capitalize;
 
         i {
           position: absolute;
@@ -132,6 +202,12 @@ body {
           justify-content: space-between;
           align-items: center;
         }
+
+        .no-data {
+          text-align: center;
+          color: #555;
+          margin: 10px 0;
+        }
       }
     }
 
@@ -168,12 +244,7 @@ body {
     }
 
     &.active {
-      width: 20vw;
-
-      .games-history {
-        transform: translateX(0%);
-        overflow-y: auto;
-      }
+      right: 0;
 
       #resize-credentials {
         transform: translate(0, -50%);
@@ -186,6 +257,23 @@ body {
             display: inline-block;
           }
         }
+      }
+    }
+
+    #log-out {
+      font-size: 1.4rem;
+      font-family: sans-serif;
+      padding: 8px 14px;
+      margin-top: 20px;
+      background-color: white;
+      cursor: pointer;
+      border: 1px solid black;
+      border-radius: 10px;
+      transition: 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #1575d5;
+        color: white;
       }
     }
   }

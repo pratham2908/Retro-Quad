@@ -24,7 +24,6 @@ const Games = () => {
                 game.style.height = "100%";
                 gamesParent.nextElementSibling.classList.add("active");
                 gamesParent.classList.remove("active");
-                console.log(crossBtn);
             })
             game.appendChild(crossBtn);
         })
@@ -34,9 +33,9 @@ const Games = () => {
                 if (e.target === game.querySelector("i")) return;
                 allGames.forEach(game => {
                     game.classList.remove("active")
-                    game.style.zIndex = 0;
+                    game.style.zIndex = 1;
                 })
-                game.style.zIndex = 10000;
+                game.style.zIndex = 10;
                 document.querySelector("#user-credentials").classList.remove("active");
                 gamesParent.classList.add("active");
                 game.style.width = "100vw";

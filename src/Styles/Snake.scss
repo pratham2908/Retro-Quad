@@ -12,7 +12,7 @@
   background-color: #fff;
 
   &.active {
-    z-index: 10000;
+    z-index: 10;
     left: -100%;
   }
 
@@ -88,35 +88,6 @@
         &::before {
           display: block;
         }
-
-        // &::after {
-        //   content: "";
-        //   position: absolute;
-        //   height: 5px;
-        //   background-color: red;
-        //   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-        //   left: 100%;
-        //   top: 50%;
-        //   transform: translate(0%, -50%);
-        //   z-index: 100;
-        //   border-radius: 25%;
-        //   animation: tongue 3s linear infinite;
-
-        //   @keyframes tongue {
-        //     0%,
-        //     100% {
-        //       width: 0px;
-        //     }
-
-        //     45% {
-        //       width: 30px;
-        //     }
-
-        //     60% {
-        //       width: 20px;
-        //     }
-        //   }
-        // }
       }
 
       &.head {
