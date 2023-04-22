@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
+import { useContext } from 'react';
+import { DataContext } from "./DataContext";
 
 const Pacman = ({ isActive }) => {
+    const { updateGame } = useContext(DataContext);
 
     const pacMan = useRef({
-        x: 50,
-        y: 100,
+        x: 500,
+        y: 0,
         direction: 'right',
-        speed: 5,
+        speed: 3,
         score: 0,
-        lives: 2,
+        lives: 3,
     })
 
     useEffect(() => {
@@ -16,6 +19,14 @@ const Pacman = ({ isActive }) => {
         if (isActive) {
             const startBtn = document.querySelector('#pacman-game .start-btn');
             const pacGame = document.querySelector(".game");
+            const pacScore = document.getElementById("pacman-score");
+            const pacLives = document.querySelector("#pacman-lives span");
+            const pacMapElement = document.querySelector(".pac-map");
+            const extraData = document.getElementById("extra-data");
+            const playAgainBtn = document.querySelector("#play-again-pac");
+            const pac = document.querySelector(".pac");
+            let firstGame = true;
+
 
             const dotsArray = [];
             const wallsArray = [{
@@ -47,40 +58,76 @@ const Pacman = ({ isActive }) => {
                 x: 0,
                 y: 0,
                 direction: 'right',
-                speed: 5,
+                speed: 2,
                 color: 'red'
             }, {
                 x: window.innerWidth - 50,
                 y: 0,
                 direction: 'down',
-                speed: 5,
+                speed: 2,
                 color: 'blue'
             }, {
                 x: window.innerWidth - 50,
                 y: pacGame.offsetHeight - 50,
                 direction: 'left',
-                speed: 5,
+                speed: 2,
                 color: 'green'
             }, {
                 x: 0,
                 y: pacGame.offsetHeight - 50,
                 direction: 'up',
-                speed: 5,
+                speed: 2,
                 color: 'yellow'
             }]
-            const monsters = [];
+            let monsters = [];
 
 
             let request = 0;
 
+            playAgainBtn.addEventListener('click', () => {
+                firstGame = false;
+                pacGame.style.display = 'none';
+                startBtn.style.display = 'block';
+                pacScore.innerHTML = 0;
+                pacMan.current.score = 0;
+                pacMan.current.lives = 3;
+                pacMan.current.x = 500;
+                pacMan.current.y = 0;
+                pacMan.current.direction = 'right';
+                pacMan.current.speed = 3;
+                extraData.style.display = 'none';
+                extraData.classList.remove('game-over');
+                pacGame.style.width = '100%';
+                pacGame.style.height = '90%';
+                monsters = [];
+                const heart = document.createElement('i');
+                heart.classList.add('fas', 'fa-heart');
+                pacLives.innerHTML = '';
+                pacGame.style.pointerEvents = 'auto';
+
+                for (let i = 0; i < 3; i++) {
+                    pacLives.appendChild(heart.cloneNode(true));
+                }
+
+                while (pacMapElement.firstChild) {
+                    pacMapElement.removeChild(pacMapElement.firstChild);
+                }
+                pacMapElement.appendChild(pac);
+
+            })
+
+
             startBtn.addEventListener('click', () => {
                 startBtn.style.display = 'none';
                 pacGame.style.display = 'block';
+                extraData.style.display = "flex";
                 init();
+                if (firstGame)
+                    animatePac();
             })
 
             function init() {
-                const pacMapElement = document.querySelector(".pac-map");
+                console.log(pacMapElement.offsetWidth, pacMapElement.offsetHeight)
                 const rowsCount = Math.floor(pacMapElement.offsetHeight / 50);
                 const colCount = Math.floor(pacMapElement.offsetWidth / 50);
                 pacGame.style.width = colCount * 50 + 'px';
@@ -101,19 +148,14 @@ const Pacman = ({ isActive }) => {
                     pacMapElement.prepend(rowElement);
                 })
 
-                pacMapElement.addEventListener('click', (e) => {
-                    cancelAnimationFrame(request);
-                })
 
                 createWalls();
                 createDots();
                 createMonsters();
-                animatePac();
 
             }
 
             function animatePac() {
-                const pac = document.querySelector(".pac");
                 request = requestAnimationFrame(animatePac);
                 pac.style.left = pacMan.current.x + 'px';
                 pac.style.top = pacMan.current.y + 'px';
@@ -150,7 +192,8 @@ const Pacman = ({ isActive }) => {
                     if (pacMan.current.x <= dotLeft && pacMan.current.x + pac.offsetWidth >= dotLeft && pacMan.current.y <= dotTop && pacMan.current.y + pac.offsetHeight >= dotTop) {
                         dot.classList.remove('dot');
                         dotsArray.splice(dotsArray.indexOf(dot), 1);
-                        pacMan.current.score++;
+                        pacMan.current.score += 10;
+                        pacScore.innerText = `Score: ${pacMan.current.score}`;
                     }
                 }
 
@@ -218,19 +261,8 @@ const Pacman = ({ isActive }) => {
                             break;
                     }
 
-                    if (monster.x <= pacMan.current.x && monster.x + 50 >= pacMan.current.x && monster.y <= pacMan.current.y && monster.y + 50 >= pacMan.current.y) {
-                        pacMan.current.lives--;
-                        pacMan.current.x = 0;
-                        pacMan.current.y = 0;
-                        pacMan.current.direction = 'right';
-                        pac.style.left = pacMan.current.x + 'px';
-                        pac.style.top = pacMan.current.y + 'px';
-                        pac.style.transform = 'rotate(0deg)';
-                        if (pacMan.current.lives === 0) {
-                            alert("Game Over");
-                            cancelAnimationFrame(request);
-                        }
-                    }
+                    checkMonsterEatPacman(monster);
+
 
                     monsters[index].style.left = monster.x + 'px';
                     monsters[index].style.top = monster.y + 'px';
@@ -239,19 +271,60 @@ const Pacman = ({ isActive }) => {
 
             }
 
+            function checkMonsterEatPacman(monster) {
+                if (monster.x <= pacMan.current.x + pac.offsetWidth && monster.x + monsters[0].offsetWidth >= pacMan.current.x && monster.y <= pacMan.current.y + pac.offsetHeight && monster.y + monsters[0].offsetHeight >= pacMan.current.y) {
+                    pacMan.current.lives--;
+                    console.log(pacMan.current.lives);
+                    pacLives.querySelector("i").classList.add("break")
+                    setTimeout(() => {
+                        pacLives.querySelector("i")?.remove();
+                        pacMan.current.x = 500;
+                        pacMan.current.y = 0;
+                        pacMan.current.direction = 'right';
+                        pac.style.left = pacMan.current.x + 'px';
+                        pac.style.top = pacMan.current.y + 'px';
+                        pac.style.transform = 'rotate(0deg)';
+                        checkGameOver();
+                    }, 1000);
+                    cancelAnimationFrame(request);
+
+
+
+                    pacGame.addEventListener("click", () => {
+                        requestAnimationFrame(animatePac);
+                    }, { once: true })
+
+                }
+            }
+
+            function checkGameOver() {
+                if (pacMan.current.lives <= 0) {
+                    extraData.classList.add("game-over");
+                    pacGame.style.pointerEvents = "none";
+                    updateGame("pacman", { score: pacMan.current.score, date: new Date().toLocaleString() })
+                    cancelAnimationFrame(request);
+                }
+            }
+
             function monsterOnBorder(monster) {
-                const xBorder = monster.x % 50 <= 2 || (monster.x + 2) % 50 <= 0;
-                const yBorder = monster.y % 50 <= 2 || (monster.y + 2) % 50 <= 0;
+                const xBorder = monster.x % 50 <= 0 || (monster.x + 0) % 50 <= 0;
+                const yBorder = monster.y % 50 <= 0 || (monster.y + 0) % 50 <= 0;
                 if (xBorder && yBorder) {
                     changeMonsterDirection(monster);
                 }
             }
 
             function changeMonsterDirection(monster) {
-                const leftBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 1)}) .pac-col:nth-child(${Math.floor(monster.x / 50)})`);
-                const rightBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 1)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 2)})`);
-                const upBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 1)})`);
-                const downBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 2)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 1)})`);
+                let leftBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 1)}) .pac-col:nth-child(${Math.floor(monster.x / 50)})`);
+                let rightBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 1)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 2)})`);
+                let upBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 1)})`);
+                let downBox = document.querySelector(`.pac-row:nth-child(${Math.floor(monster.y / 50 + 2)}) .pac-col:nth-child(${Math.floor(monster.x / 50 + 1)})`);
+                if (monster.direction == "left") {
+                    leftBox = leftBox?.nextElementSibling;
+                    rightBox = rightBox?.previousElementSibling;
+                    upBox = upBox?.nextElementSibling;
+                    downBox = downBox?.nextElementSibling;
+                }
 
                 const leftWall = leftBox?.classList.contains("wall");
                 const rightWall = rightBox?.classList.contains("wall");
@@ -272,10 +345,29 @@ const Pacman = ({ isActive }) => {
                     options.push('down');
                 }
 
-                const random = Math.floor(Math.random() * options.length);
-                monster.direction = options[random];
+                const options2 = Array.from(options);
+                if (monster.x < pacMan.current.x) {
+                    // remove left from options2
+                    options2.splice(options2.indexOf('left'), 1);
+                }
+                if (monster.x > pacMan.current.x) {
+                    // remove right from options2
+                    options2.splice(options2.indexOf('right'), 1);
+                }
+
+                if (monster.y < pacMan.current.y) {
+                    // remove up from options2
+                    options2.splice(options2.indexOf('up'), 1);
+                }
+
+                if (monster.y > pacMan.current.y) {
+                    // remove down from options2
+                    options2.splice(options2.indexOf('down'), 1);
+                }
 
 
+                const randDir = Math.floor(Math.random() * options2.length);
+                monster.direction = options2[randDir] || options[Math.floor(Math.random() * options.length)];
 
             }
 
@@ -300,9 +392,8 @@ const Pacman = ({ isActive }) => {
                     const leftWall = wall.previousElementSibling?.classList.contains("wall");
                     const rightWall = wall.nextElementSibling?.classList.contains("wall");
                     const index = Array.from(wall.parentElement.children).indexOf(wall);
-                    const upWall = wall.parentElement.previousElementSibling.children[index]?.classList.contains("wall");
-                    const downWall = wall.parentElement.nextElementSibling.children[index]?.classList.contains("wall");
-                    console.log()
+                    const upWall = wall.parentElement.previousElementSibling?.children[index]?.classList.contains("wall");
+                    const downWall = wall.parentElement.nextElementSibling?.children[index]?.classList.contains("wall");
 
                     if (leftWall) {
                         wall.style.borderLeft = 'none';
@@ -403,7 +494,6 @@ const Pacman = ({ isActive }) => {
                         break;
 
                     default:
-                        console.log(e.key);
                         break;
                 }
             }
@@ -412,7 +502,6 @@ const Pacman = ({ isActive }) => {
             document.querySelector("#pacman-game .fa-times").addEventListener('click', () => {
                 cancelAnimationFrame(request);
             })
-
 
             function canMoveOrTurn(direction) {
                 const pac = document.querySelector(".pac");
@@ -467,10 +556,12 @@ const Pacman = ({ isActive }) => {
     }, [isActive])
 
 
+
+
     if (!isActive) {
         return (
             <div id="pacman-game">
-                <h1>Pacman Loading...</h1>
+                <video src="pacman.mp4" autoPlay loop muted></video>
             </div>
         )
     } else {
@@ -483,6 +574,11 @@ const Pacman = ({ isActive }) => {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="extra-data">
+                    <div id="pacman-score">Score : 0</div>
+                    <div id="pacman-lives">Lives: <span><i className='fas fa-heart'></i><i className='fas fa-heart'></i><i className='fas fa-heart'></i></span></div>
+                    <div id="play-again-pac">Play Again</div>
                 </div>
                 <div className="start-btn">Start</div>
             </div>

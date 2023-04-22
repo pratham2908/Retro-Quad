@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { DataContext } from "./DataContext";
 
 const Pong = ({ isActive }) => {
-    const { updateGame } = useContext(DataContext);
+    const { updateGame, changeGame } = useContext(DataContext);
     useEffect(() => {
         if (isActive) {
             const ctx = document.getElementById('canvas').getContext('2d');
@@ -13,6 +13,8 @@ const Pong = ({ isActive }) => {
             const computer = document.getElementById("computer-board");
             const score = document.getElementById("user-score");
             const sound = document.getElementById("hit");
+            const playAgainBtn = document.querySelector(".play-again-pong");
+            const closeBtn = document.querySelector("#pong-game > i")
 
             let height = ctx.canvas.height = window.innerHeight;
             let width = ctx.canvas.width = window.innerWidth;
@@ -67,7 +69,6 @@ const Pong = ({ isActive }) => {
 
                     if (this.x > window.innerWidth / 2 && this.x - this.velX <= window.innerWidth / 2 && this.velX > 0) {
                         updateComputer(this.x, this.y, this.velX, this.velY, this.size);
-                        console.log("move computer")
                     }
                     this.draw();
                 }
@@ -94,15 +95,12 @@ const Pong = ({ isActive }) => {
                 let top = finalY;
                 top = top > computer.offsetHeight / 2 ? top : computer.offsetHeight / 2;
                 top = top > window.innerHeight - computer.offsetHeight / 2 ? window.innerHeight - computer.offsetHeight / 2 : top;
-                console.log(computer.style.top, computer.getBoundingClientRect().top);
                 computer.style.top = top + "px";
                 const data = { y, vy, steps, cycleSteps, cycleCount, extraSteps, finalVy, finalY, top }
-                console.table(data);
-                console.log(computer.style.top, computer.getBoundingClientRect().top);
 
             }
 
-            const balls = []
+            let balls = []
             let request = 0;
 
             function animate() {
@@ -118,6 +116,8 @@ const Pong = ({ isActive }) => {
             startBtnPong.addEventListener('click', () => {
                 startBtnPong.style.display = "None";
                 document.getElementById("boards").style.display = "flex";
+                document.getElementById("score").style.display = "flex";
+                balls = [];
                 balls.push(new Ball(300, 400, 12, 15, 'blue', 20));
                 animate();
             }
@@ -133,13 +133,29 @@ const Pong = ({ isActive }) => {
                 if (balls.length === 0) {
                     document.body.style.cursor = "default";
                     updateGame("pong", { score: score.innerHTML, date: new Date().toLocaleString() });
-                    startBtnPong.style.display = "block";
-                    document.getElementById("boards").style.display = "none";
+                    cancelAnimationFrame(request);
+                    document.getElementById("score").classList.add("game-over");
+                    playAgainBtn.classList.add("active");
+                    playAgainBtn.addEventListener('click', () => {
+                        document.getElementById("score").classList.remove("game-over");
+                        playAgainBtn.classList.remove("active");
+                        startBtnPong.style.display = "block";
+                        document.getElementById("boards").style.display = "none";
+                        score.innerHTML = 0;
+                    })
                 }
             }
 
+            closeBtn.addEventListener('click', () => {
+                cancelAnimationFrame(request);
+            })
+
+
+
         }
     }, [isActive])
+
+
 
     if (isActive) {
         return (
@@ -153,10 +169,12 @@ const Pong = ({ isActive }) => {
                     <div className="computer">
                         <div id="computer-board"></div>
                     </div>
-                    <div id="score">
-                        <h1>Score</h1>
-                        <div id="user-score">0</div>
-                    </div>
+
+                </div>
+                <div id="score">
+                    <h1>Score</h1>
+                    <div id="user-score">0</div>
+                    <button className="play-again-pong">Play Again</button>
                 </div>
                 <canvas id="canvas"></canvas>
                 <audio id="hit" src="hit.mp3"></audio>

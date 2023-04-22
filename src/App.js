@@ -14,6 +14,7 @@ function App() {
       <div className="App">
         <Games />
         <UserCredentials />
+        <div className="loading-screen active "></div>
       </div>
     </DataContextProvider>
   );

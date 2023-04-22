@@ -3,7 +3,7 @@ import { DataContext } from "./DataContext";
 import toast, { Toaster } from 'react-hot-toast';
 
 const UserCredentials = () => {
-    const { user, setUser, updateGame } = useContext(DataContext);
+    const { user, setUser } = useContext(DataContext);
     let applied = useRef(false);
 
     function registerUser(e) {
@@ -14,6 +14,7 @@ const UserCredentials = () => {
             password: e.target[2].value
         }
         toast.loading("Registering...");
+        document.querySelector(".loading-screen").classList.add("active");
         fetch('https://graceful-vest-ray.cyclic.app/register', {
             method: "POST",
             body: JSON.stringify({ data: registerData, type: "register" }),
@@ -31,9 +32,11 @@ const UserCredentials = () => {
                     position: "top-right"
                 });
             } else {
-                toast.success(data);
+                toast.error(data);
                 document.querySelector(".register .warning").innerHTML = data;
             }
+            document.querySelector(".loading-screen").classList.add("active");
+
         })
 
     }
@@ -45,6 +48,8 @@ const UserCredentials = () => {
             password: e.target[1].value
         }
         toast.loading("Logging in...");
+        document.querySelector(".loading-screen").classList.add("active");
+
         fetch("https://graceful-vest-ray.cyclic.app/login", {
             method: "POST",
             body: JSON.stringify({ data: loginData, type: "login" }),
@@ -65,6 +70,8 @@ const UserCredentials = () => {
                 toast.success(data);
                 document.querySelector(".login .warning").innerHTML = data;
             }
+            document.querySelector(".loading-screen").classList.remove("active");
+
         })
     }
 
@@ -91,6 +98,8 @@ const UserCredentials = () => {
         })
 
 
+        toast.loading("Checking User Data")
+
         const localUser = JSON.parse(localStorage.getItem("loginData"));
         if (localUser) {
             fetch("https://graceful-vest-ray.cyclic.app/fetch", {
@@ -102,11 +111,24 @@ const UserCredentials = () => {
             }).then(res => {
                 return res.json()
             }).then(data => {
-                setUser(data);
+                setUser({ ...data, email: localUser.email });
+                toast.dismiss();
+                toast.success(`Successfully Logged in as ${data.name}`)
+                document.querySelector(".loading-screen").classList.remove("active");
+
+
             })
+        } else {
+            setTimeout(() => {
+                toast.dismiss();
+                toast.error("No user data found")
+                toast("Please login or register")
+                document.querySelector(".loading-screen").classList.remove("active");
 
-
+            }, 1000)
         }
+
+
     }, [])
 
     useEffect(() => {
@@ -150,6 +172,9 @@ const UserCredentials = () => {
 
     return (
         <div id="user-credentials" className="active">
+            <div className="logo">
+                <img src="/logo2.png" alt="logo"></img>
+            </div>
             {!user ? (
                 <>
                     <div className="register ">
@@ -187,6 +212,7 @@ const UserCredentials = () => {
             <div id="resize-credentials">
                 <span><i className="fa-solid fa-caret-left fa-beat-fade" ></i><i className="fa-solid fa-caret-right fa-beat-fade" ></i></span>
             </div>
+
             <Toaster toastOptions={{ position: "top-right", style: { fontSize: "1.2rem", fontFamily: "sans-serif", textDecoration: "capitalize", } }} />
         </div>
     )

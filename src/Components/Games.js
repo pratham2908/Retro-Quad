@@ -24,6 +24,9 @@ const Games = () => {
                 game.style.height = "100%";
                 gamesParent.nextElementSibling.classList.add("active");
                 gamesParent.classList.remove("active");
+                setTimeout(() => {
+                    game.style.zIndex = 1;
+                }, 1000);
             })
             game.appendChild(crossBtn);
         })

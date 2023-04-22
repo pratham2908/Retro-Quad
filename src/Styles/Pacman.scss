@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: center;
   width: 100%;
   height: 100%;
   top: 0;
@@ -15,11 +15,12 @@
   &.active {
     top: -100%;
     left: 0;
+    align-items: flex-end;
   }
 
   .game {
     width: 100%;
-    height: 80vh;
+    height: 90vh;
     border: 1px solid red;
     background-color: #000;
     display: none;
@@ -192,16 +193,110 @@
     }
   }
 
+  #extra-data {
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    transform: translate(-50%, 0);
+    font-size: 2rem;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    display: none;
+    transition: all 0.3s ease-in-out;
+
+    #pacman-lives {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        font-size: 2rem;
+        color: red;
+
+        i.break {
+          animation: break-heart 1s linear;
+        }
+
+        @keyframes break-heart {
+          0% {
+            transform: translate(0, 0);
+          }
+          30% {
+            transform: translate(0, -20px);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(0, 100px);
+            opacity: 0;
+          }
+        }
+      }
+    }
+
+    &.game-over {
+      left: 50%;
+      top: 50%;
+      border: 4px solid white;
+      padding: 4rem;
+      transform: translate(-50%, -50%);
+      background-color: black;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      border-radius: 10px;
+      z-index: 100;
+      flex-direction: column;
+
+      #pacman-lives {
+        display: none;
+      }
+
+      #play-again-pac {
+        border: 1px solid white;
+        padding: 10px 20px;
+        background-color: black;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+
+        &:hover {
+          background-color: white;
+          color: black;
+        }
+      }
+    }
+
+    #play-again-pac {
+      display: none;
+    }
+  }
+
   .start-btn {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 10px 20px;
+    padding: 15px 30px;
     border: 1px solid #000;
-    background-color: #fff;
+    background-color: #000;
+    color: #fff;
     cursor: pointer;
+    border-radius: 10px;
     transition: all 0.3s ease-in-out;
-    font: 1.5rem "Roboto", sans-serif;
+    font: 1.7rem "Roboto", sans-serif;
+
+    &:hover {
+      background-color: #fff;
+      color: #000;
+    }
   }
 }
