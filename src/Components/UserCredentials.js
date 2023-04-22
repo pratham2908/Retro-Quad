@@ -86,8 +86,9 @@ const UserCredentials = () => {
     }
 
     function logOut() {
-        setUser();
+        setUser(null);
         localStorage.removeItem("loginData");
+        window.location.reload();
     }
 
     useEffect(() => {
@@ -136,6 +137,7 @@ const UserCredentials = () => {
             const headers = document.querySelectorAll("#user-credentials .game-header");
             headers.forEach(header => {
                 header.addEventListener("click", () => {
+                    console.log(header);
                     header.classList.toggle("active");
                     if (header.classList.contains("active")) {
                         header.nextElementSibling.style.height = header.nextElementSibling.scrollHeight + "px";
