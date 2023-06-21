@@ -17,15 +17,17 @@ const Pacman = ({ isActive }) => {
     useEffect(() => {
 
         if (isActive) {
-            const startBtn = document.querySelector('#pacman-game .start-btn');
-            const pacGame = document.querySelector(".game");
-            const pacScore = document.getElementById("pacman-score");
-            const pacLives = document.querySelector("#pacman-lives span");
-            const pacMapElement = document.querySelector(".pac-map");
-            const extraData = document.getElementById("extra-data");
-            const playAgainBtn = document.querySelector("#play-again-pac");
-            const pac = document.querySelector(".pac");
+            const pacContainer = document.getElementById("pacman-game");
+            const startBtn = pacContainer.querySelector('.start-btn');
+            const pacGame = pacContainer.querySelector(".game");
+            const pacScore = pacContainer.querySelector("#pacman-score");
+            const pacLives = pacContainer.querySelector("#pacman-lives span");
+            const pacMapElement = pacContainer.querySelector(".pac-map");
+            const extraData = pacContainer.querySelector("#extra-data");
+            const playAgainBtn = pacContainer.querySelector("#play-again-pac");
+            const pac = pacContainer.querySelector(".pac");
             let firstGame = true;
+            let pacStarted = false;
 
 
             const dotsArray = [];
@@ -122,6 +124,7 @@ const Pacman = ({ isActive }) => {
                 pacGame.style.display = 'block';
                 extraData.style.display = "flex";
                 init();
+                pacStarted = true
                 if (firstGame)
                     animatePac();
             })
@@ -301,7 +304,7 @@ const Pacman = ({ isActive }) => {
                 if (pacMan.current.lives <= 0) {
                     extraData.classList.add("game-over");
                     pacGame.style.pointerEvents = "none";
-                    updateGame("pacman", { score: pacMan.current.score, date: new Date().toLocaleString() })
+                    updateGame("pacman", { score: pacMan.current.score })
                     cancelAnimationFrame(request);
                 }
             }
@@ -475,6 +478,8 @@ const Pacman = ({ isActive }) => {
             }
 
             window.addEventListener('keydown', (e) => {
+                if (!pacContainer.querySelector(".game") || !pacStarted) return;
+                console.log("pressed");
                 switch (e.key) {
                     case 'ArrowRight':
                         if (canMoveOrTurn('right'))
@@ -554,9 +559,6 @@ const Pacman = ({ isActive }) => {
         }
 
     }, [isActive])
-
-
-
 
     if (!isActive) {
         return (

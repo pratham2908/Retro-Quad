@@ -1,6 +1,6 @@
 import './Styles/App.css';
 import "./Styles/Sudoku.css"
-import "./Styles/Snake.css"
+import "./Styles/Snake2.css"
 import "./Styles/Pong.css"
 import "./Styles/Pacman.css"
 import DataContextProvider from './Components/DataContext';

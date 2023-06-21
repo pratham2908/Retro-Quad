@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { DataContext } from "./DataContext";
 
 const Sudoku = ({ isActive }) => {
-
+    const { updateGame } = useContext(DataContext);
     useEffect(() => {
         if (isActive) {
             const container = document.querySelector('#sudoku');
-
             const sudoku = [];
+            let difficulty = null;
 
             function createGrid() {
                 for (let i = 0; i < 9; i++) {
@@ -35,12 +36,11 @@ const Sudoku = ({ isActive }) => {
 
                 sudokuSolver();
                 const boxesAll = document.querySelectorAll('.box');
-                console.log(boxesAll);
 
                 boxesAll.forEach((box, index) => {
                     const i = Math.floor(index / 9);
                     const j = index % 9;
-                    // console.log(i, j)
+                    if (i > 8 || j > 8 || i < 0 || j < 0) return;
                     if (sudoku[i][j] !== '.') {
                         box.innerHTML = sudoku[i][j];
                     }
@@ -78,8 +78,6 @@ const Sudoku = ({ isActive }) => {
                         return false;
                     }
                 }
-
-
                 const rowStart = row - row % 3;
                 const colStart = col - col % 3;
 
@@ -116,10 +114,11 @@ const Sudoku = ({ isActive }) => {
             })
 
             function changeDifficulty(button) {
-                if (button.innerHTML == "Easy") {
+                difficulty = button.innerHTML;
+                if (difficulty == "Easy") {
                     removeNumbers(40);
-                } else if (button.innerHTML == "Medium") {
-                    removeNumbers(3);
+                } else if (difficulty == "Medium") {
+                    removeNumbers(50);
                 } else {
                     removeNumbers(60);
                 }
@@ -195,32 +194,36 @@ const Sudoku = ({ isActive }) => {
 
             function enterValue() {
                 window.addEventListener('keydown', (e) => {
+                    if (!document.querySelector("#sudoku")) return;
                     const selected = document.querySelector('.selected');
                     const pencil = document.querySelector('.selected.pencil');
                     const span = selected?.lastElementChild;
-                    console.log(selected?.lastElementChild)
-                    if (!pencil && selected) {
-                        if (e.key >= 1 && e.key <= 9) {
-                            selected.innerHTML = e.key;
-                            selected.appendChild(span);
-                            checkCompletion();
+                    // console.log(selected?.lastElementChild)
+                    if (selected) {
+                        if (!pencil) {
+                            if (e.key >= 1 && e.key <= 9) {
+                                selected.innerHTML = e.key;
+                                selected.appendChild(span);
+                                checkCompletion();
 
-                        } else if (e.key == "Backspace") {
-                            selected.innerHTML = "";
-                            document.querySelector('#sudoku').classList.remove('error');
-                            selected.appendChild(span);
-                        }
-                    } else {
-                        if (e.key >= 1 && e.key <= 9) {
-                            selected.innerHTML = selected.textContent.includes(e.key) ? selected.textContent.replace(e.key, "") : selected.textContent + e.key;
-                            pencil.appendChild(span);
-                            checkCompletion();
+                            } else if (e.key == "Backspace") {
+                                selected.innerHTML = "";
+                                document.querySelector('#sudoku').classList.remove('error');
+                                selected.appendChild(span);
+                            }
+                        } else {
+                            if (e.key >= 1 && e.key <= 9) {
+                                selected.innerHTML = selected.textContent.includes(e.key) ? selected.textContent.replace(e.key, "") : selected.textContent + e.key;
+                                pencil.appendChild(span);
+                                checkCompletion();
 
-                        } else if (e.key == "Backspace") {
-                            selected.innerHTML = "";
-                            pencil.appendChild(span);
+                            } else if (e.key == "Backspace") {
+                                selected.innerHTML = "";
+                                pencil.appendChild(span);
+                            }
                         }
                     }
+
 
                 })
             }
@@ -252,14 +255,14 @@ const Sudoku = ({ isActive }) => {
                         }
 
                     }
-                    console.log("you won")
+                    // console.log("you won")
                     showResult();
                 }, 300);
 
             }
 
             function stopWatch(h, m, s) {
-                if (s == 60) {
+                if (s === 60) {
                     s = 0;
                     m += 1;
                 }
@@ -272,6 +275,9 @@ const Sudoku = ({ isActive }) => {
                 m = m < 10 ? "0" + m : m;
                 s = s < 10 ? "0" + s : s;
 
+                if (!document.querySelector("#time")) {
+                    return;
+                }
                 document.querySelector('#time').innerHTML = h + ":" + m + ":" + s;
                 setTimeout(() => {
                     stopWatch(Number(h), Number(m), Number(s) + 1);
@@ -285,8 +291,23 @@ const Sudoku = ({ isActive }) => {
                 document.querySelector('.timer').style.display = "none";
                 document.querySelector('#sudoku').classList.remove('active');
                 document.querySelector('.result').classList.add('active');
-                displayTime.innerHTML = time;
+
+                const timeSplit = time.split(":");
+                displayTime.innerHTML = timeSplit[0] > 0 ? timeSplit[0] + " hours " : "" + timeSplit[1] > 0 ? timeSplit[1] + " minutes " : "" + timeSplit[2] + " seconds";
+
+                const timeToHistory = timeSplit[0] > 0 ? timeSplit[0] + "hr " : "" + timeSplit[1] > 0 ? timeSplit[1] + "m " : "" + timeSplit[2] + "s";
+                updateGame("sudoku", { score: timeToHistory, difficulty: difficulty })
             }
+
+            document.querySelector("#sudoku-container").addEventListener("click", (e) => {
+                console.log(e.target, e.target.parentNode);
+                if (!e.target.classList.contains("new") && !e.target.parentNode?.classList.contains("new") && !e.target.classList.contains("pencil")) {
+                    document.querySelectorAll(".box").forEach(box => {
+                        box.classList.remove("selected");
+                    }
+                    );
+                }
+            })
 
         }
     }, [isActive])
@@ -306,7 +327,6 @@ const Sudoku = ({ isActive }) => {
                 <div className="timer">
                     <h1><i className="far fa-clock"></i><span id="time">00:00</span></h1>
                 </div>
-
                 <div className="result">
                     <h1><span>🎉</span>Congratulations<span>🎉</span></h1>
                     <h2>You have completed the game in <span id="time-taken"></span></h2>
@@ -316,7 +336,7 @@ const Sudoku = ({ isActive }) => {
     } else {
         return (
             <div id="sudoku-container">
-                <video src="./sudoku-final.mp4" autoPlay loop muted></video>
+                <img src="./SUDOKU.gif" alt="sudoku gif"></img>
             </div>
         )
     }

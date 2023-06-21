@@ -35,6 +35,12 @@ body {
         object-fit: fill;
       }
 
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+      }
+
       > h1 {
         background-color: #fff;
       }
@@ -78,6 +84,7 @@ body {
     transition: all 0.5s ease-in-out;
     z-index: 5;
     background-color: white;
+    font-family: sans-serif;
 
     .logo {
       img {
@@ -311,6 +318,7 @@ body {
       background-color: white;
       cursor: pointer;
       border: 1px solid black;
+      box-shadow: 0 0 6px rgba(#000, 0.7);
       border-radius: 10px;
       transition: 0.2s ease-in-out;
 
@@ -325,8 +333,8 @@ body {
     position: absolute;
     inset: 0;
     z-index: 50;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
     display: none;
 
     &.active {

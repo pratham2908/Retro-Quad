@@ -35,7 +35,7 @@ const UserCredentials = () => {
                 toast.error(data);
                 document.querySelector(".register .warning").innerHTML = data;
             }
-            document.querySelector(".loading-screen").classList.add("active");
+            document.querySelector(".loading-screen").classList.remove("active");
 
         })
 
@@ -164,6 +164,7 @@ const UserCredentials = () => {
                                 <div>{game.score}</div>
                                 <div>{game.date}</div>
                                 <div>{game.time}</div>
+                                {game.difficulty && <div>{game.difficulty}</div>}
                             </div>
                         )
                     }) : <h1 className="no-data">No data found</h1>}

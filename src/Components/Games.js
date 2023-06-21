@@ -26,7 +26,7 @@ const Games = () => {
                 gamesParent.classList.remove("active");
                 setTimeout(() => {
                     game.style.zIndex = 1;
-                }, 1000);
+                }, 500);
             })
             game.appendChild(crossBtn);
         })

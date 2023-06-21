@@ -3,11 +3,11 @@ import { useContext } from "react";
 import { DataContext } from "./DataContext";
 
 const Pong = ({ isActive }) => {
-    const { updateGame, changeGame } = useContext(DataContext);
+    const { updateGame } = useContext(DataContext);
     useEffect(() => {
         if (isActive) {
             const ctx = document.getElementById('canvas').getContext('2d');
-            const game = document.getElementById('pong-game');
+            const pongGame = document.getElementById('pong-game');
             const startBtnPong = document.getElementById('start-pong');
             const board = document.getElementById("user-board");
             const computer = document.getElementById("computer-board");
@@ -15,6 +15,7 @@ const Pong = ({ isActive }) => {
             const sound = document.getElementById("hit");
             const playAgainBtn = document.querySelector(".play-again-pong");
             const closeBtn = document.querySelector("#pong-game > i")
+            let pongStarted = false;
 
             let height = ctx.canvas.height = window.innerHeight;
             let width = ctx.canvas.width = window.innerWidth;
@@ -105,9 +106,9 @@ const Pong = ({ isActive }) => {
 
             function animate() {
                 request = requestAnimationFrame(animate);
-                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                ctx.fillStyle = "rgba(65, 136, 222, 0.4)";
                 ctx.fillRect(0, 0, width, height);
-
+                ctx.globalAlpha = 1;
                 for (const element of balls) {
                     element.update();
                 }
@@ -118,21 +119,36 @@ const Pong = ({ isActive }) => {
                 document.getElementById("boards").style.display = "flex";
                 document.getElementById("score").style.display = "flex";
                 balls = [];
-                balls.push(new Ball(300, 400, 12, 15, 'blue', 20));
-                animate();
+                balls.push(new Ball(52, window.innerHeight / 2, 12, 15, '#ff6453', 20));
+                for (let ball of balls) {
+                    ball.draw();
+                }
+                setTimeout(() => {
+                    pongStarted = true;
+                }, 10);
             }
             )
 
-            window.addEventListener("mousemove", (e) => {
+            pongGame.addEventListener("mousemove", (e) => {
                 let y = e.clientY > board.offsetHeight / 2 ? e.clientY : board.offsetHeight / 2;
                 y = y > window.innerHeight - board.offsetHeight / 2 ? window.innerHeight - board.offsetHeight / 2 : y;
                 board.style.top = y + "px";
+                if (request == 0 && pongStarted) {
+                    console.log("happening")
+                    for (let ball of balls) {
+                        ball.y = y;
+                        ctx.fillStyle = "rgba(65, 136, 222, 0.4)";
+                        ctx.fillRect(0, 0, width, height);
+                        ball.draw();
+                    }
+                }
+
             })
 
             function checkGameOver() {
                 if (balls.length === 0) {
                     document.body.style.cursor = "default";
-                    updateGame("pong", { score: score.innerHTML, date: new Date().toLocaleString() });
+                    updateGame("pong", { score: score.innerHTML });
                     cancelAnimationFrame(request);
                     document.getElementById("score").classList.add("game-over");
                     playAgainBtn.classList.add("active");
@@ -146,14 +162,18 @@ const Pong = ({ isActive }) => {
                 }
             }
 
+            pongGame.addEventListener("click", () => {
+                if (pongStarted) {
+                    animate();
+                }
+            })
+
             closeBtn.addEventListener('click', () => {
                 cancelAnimationFrame(request);
             })
 
-
-
         }
-    }, [isActive])
+    }, [isActive, updateGame])
 
 
 

@@ -7,9 +7,10 @@ const Snake = ({ isActive }) => {
     useEffect(() => {
         if (isActive) {
             const container = document.querySelector("#snake-game");
-            const startBtnSnake = document.querySelector("#start-btn");
+            const startBtnSnake = document.querySelector("#start-btn-snake");
             const sound = document.querySelector("#eat");
             const playAgainBtn = document.querySelector("#snake-game-over button");
+            const snakeModal = document.querySelector(".snake-modal");
             let speed = 3;
             let score = 0;
             const boxes = [];
@@ -19,6 +20,7 @@ const Snake = ({ isActive }) => {
             const dirVal = { right: 0, down: 90, left: 180, up: 270 };
             let totalRows = 0;
             let totalCols = 0;
+            let difficultyChosen = null;
 
             playAgainBtn.addEventListener("click", () => {
                 startBtnSnake.parentElement.parentElement.classList.add('active');
@@ -118,7 +120,7 @@ const Snake = ({ isActive }) => {
                 document.querySelector('#snake-game-over h4 span').textContent = score;
                 startBtnSnake.parentElement.parentElement.classList.add("game-over", "active");
                 window.removeEventListener("keydown", enterDirection);
-                updateGame("snake", { score: score, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() });
+                updateGame("snake", { score: score, difficulty: difficultyChosen });
             }
 
             function createApple() {
@@ -135,6 +137,7 @@ const Snake = ({ isActive }) => {
             }
 
             function enterDirection(e) {
+                if (!document.querySelector("#snake-game")) return;
                 if (!e.key.includes("Arrow")) return;
                 if (e.key.split("Arrow")[1].toLowerCase() == dir) return;
                 const value = e.key.split("Arrow")[1].toLowerCase();
@@ -156,7 +159,7 @@ const Snake = ({ isActive }) => {
                 startGame();
             }
 
-            const buttonsDifficulty = document.querySelectorAll(".difficulty button");
+            const buttonsDifficulty = document.querySelectorAll(".choose-difficulty button");
 
             buttonsDifficulty.forEach((btn) => {
                 btn.addEventListener("click", () => {
@@ -164,7 +167,8 @@ const Snake = ({ isActive }) => {
                         btn.classList.remove("selected");
                     })
                     btn.classList.add("selected");
-                    speed = btn.textContent.toLowerCase() == "easy" ? 1 : btn.textContent.toLowerCase() == "medium" ? 2 : 3;
+                    difficultyChosen = btn.textContent;
+                    speed = difficultyChosen == "Easy" ? 1 : difficultyChosen == "Medium" ? 2 : 3;
                 })
             })
 
@@ -184,6 +188,7 @@ const Snake = ({ isActive }) => {
             })
 
             window.addEventListener("keydown", (e) => {
+                if (!snakeModal.classList.contains("active")) return;
                 if (e.key == "Enter" || e.key == " ") {
                     startBtnSnake.click();
                 }
@@ -201,22 +206,19 @@ const Snake = ({ isActive }) => {
                     <p id="score">0</p>
                 </div>
                 <div id="snake-game"></div>
-                <div className="modal active">
+                <div className="snake-modal active">
                     <div className="start-game">
                         <h1>Welcome to Snake</h1>
                         <div className="choose-difficulty">
-                            <h2>Choose Difficulty</h2>
-                            <div className="difficulty">
-                                <button>Easy</button>
-                                <button>Medium</button>
-                                <button>Hard</button>
-                            </div>
+                            <button>Easy</button>
+                            <button>Medium</button>
+                            <button>Hard</button>
                         </div>
                         <p>
                             Use the
                             <img src="arrow-keys-2.png" alt="arrow-keys" /> keys to move the snake
                         </p>
-                        <button id="start-btn">Start Game</button>
+                        <button id="start-btn-snake">Start Game</button>
                     </div>
                     <div id="snake-game-over">
                         <h2>Game Over</h2>

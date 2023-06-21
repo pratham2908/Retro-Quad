@@ -30,6 +30,10 @@ const DataContextProvider = (props) => {
             }, 1000);
             return;
         }
+        newEntry.date = new Date().toLocaleDateString();
+        newEntry.time = new Date().toLocaleTimeString();
+        newEntry.time = newEntry.time.slice(0, newEntry.time.length - 6) + newEntry.time.slice(newEntry.time.length - 3, newEntry.time.length);
+        newEntry.date = newEntry.date.slice(0, newEntry.date.length - 4) + newEntry.date.slice(newEntry.date.length - 2, newEntry.date.length);
         user.games[game].unshift(newEntry);
         setUser({ ...user });
         document.querySelector(".loading-screen").classList.add("active");
