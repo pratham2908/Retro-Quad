@@ -21,6 +21,11 @@ const Snake = ({ isActive }) => {
             let totalRows = 0;
             let totalCols = 0;
             let difficultyChosen = null;
+            const height = window.innerHeight;
+            const width = window.innerWidth;
+            const size = Math.min(height, width) * 0.9 / 15;
+            container.style.setProperty("--size", size + "px");
+            console.log(size);
 
             playAgainBtn.addEventListener("click", () => {
                 startBtnSnake.parentElement.parentElement.classList.add('active');
@@ -34,10 +39,11 @@ const Snake = ({ isActive }) => {
             });
 
             function createGame() {
-                totalRows = Math.floor(container.clientHeight / 50);
-                totalCols = Math.floor(container.clientWidth / 50);
-                container.style.height = `${totalRows * 50}px`;
-                container.style.width = `${totalCols * 50}px`;
+                totalRows = Math.floor(container.clientHeight / size);
+                totalCols = Math.floor(container.clientWidth / size);
+                console.log(totalRows, totalCols);
+                container.style.height = `${totalRows * size}px`;
+                container.style.width = `${totalCols * size}px`;
                 for (let i = 0; i < totalRows; i++) {
                     const row = [];
                     for (let j = 0; j < totalCols; j++) {

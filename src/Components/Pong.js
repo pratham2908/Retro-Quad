@@ -15,10 +15,14 @@ const Pong = ({ isActive }) => {
             const sound = document.getElementById("hit");
             const playAgainBtn = document.querySelector(".play-again-pong");
             const closeBtn = document.querySelector("#pong-game > i")
+            let pongReady = false;
             let pongStarted = false;
-
             let height = ctx.canvas.height = window.innerHeight;
             let width = ctx.canvas.width = window.innerWidth;
+            let boardHeight = Math.round(height * 3 / 16);
+            let boardWidth = Math.round(width * 3 / 160);
+            document.querySelector("#boards").style.setProperty("--height", boardHeight + "px");
+            document.querySelector("#boards").style.setProperty("--width", boardWidth + "px");
 
             class Ball {
                 constructor(x, y, velX, velY, color, size) {
@@ -81,6 +85,7 @@ const Pong = ({ isActive }) => {
             }
 
             function updateComputer(x, y, vx, vy, size) {
+                console.log(window.innerHeight);
                 let steps = Math.floor((window.innerWidth - computer.offsetWidth - x - size * 2) / vx)
                 if (vy > 0) {
                     steps -= Math.floor((window.innerHeight - size - y) / vy)
@@ -98,6 +103,7 @@ const Pong = ({ isActive }) => {
                 top = top > window.innerHeight - computer.offsetHeight / 2 ? window.innerHeight - computer.offsetHeight / 2 : top;
                 computer.style.top = top + "px";
                 const data = { y, vy, steps, cycleSteps, cycleCount, extraSteps, finalVy, finalY, top }
+                console.log(top);
 
             }
 
@@ -106,10 +112,9 @@ const Pong = ({ isActive }) => {
 
             function animate() {
                 request = requestAnimationFrame(animate);
-                ctx.fillStyle = "rgba(65, 136, 222, 0.4)";
+                ctx.fillStyle = "rgba(65, 136, 222, 1)";
                 ctx.fillRect(0, 0, width, height);
-                ctx.globalAlpha = 1;
-                for (const element of balls) {
+                for (let element of balls) {
                     element.update();
                 }
             }
@@ -119,12 +124,12 @@ const Pong = ({ isActive }) => {
                 document.getElementById("boards").style.display = "flex";
                 document.getElementById("score").style.display = "flex";
                 balls = [];
-                balls.push(new Ball(52, window.innerHeight / 2, 12, 15, '#ff6453', 20));
+                balls.push(new Ball(boardWidth + width / 80 + 2, board.getBoundingClientRect().top + board.offsetHeight / 2, width * 0.008, height * 0.018, '#ff6453', width / 80));
                 for (let ball of balls) {
                     ball.draw();
                 }
                 setTimeout(() => {
-                    pongStarted = true;
+                    pongReady = true;
                 }, 10);
             }
             )
@@ -133,11 +138,10 @@ const Pong = ({ isActive }) => {
                 let y = e.clientY > board.offsetHeight / 2 ? e.clientY : board.offsetHeight / 2;
                 y = y > window.innerHeight - board.offsetHeight / 2 ? window.innerHeight - board.offsetHeight / 2 : y;
                 board.style.top = y + "px";
-                if (request == 0 && pongStarted) {
-                    console.log("happening")
+                if (request == 0 && pongReady) {
                     for (let ball of balls) {
                         ball.y = y;
-                        ctx.fillStyle = "rgba(65, 136, 222, 0.4)";
+                        ctx.fillStyle = "rgba(65, 136, 222, 1)";
                         ctx.fillRect(0, 0, width, height);
                         ball.draw();
                     }
@@ -150,30 +154,43 @@ const Pong = ({ isActive }) => {
                     document.body.style.cursor = "default";
                     updateGame("pong", { score: score.innerHTML });
                     cancelAnimationFrame(request);
-                    document.getElementById("score").classList.add("game-over");
-                    playAgainBtn.classList.add("active");
-                    playAgainBtn.addEventListener('click', () => {
-                        document.getElementById("score").classList.remove("game-over");
-                        playAgainBtn.classList.remove("active");
-                        startBtnPong.style.display = "block";
-                        document.getElementById("boards").style.display = "none";
-                        score.innerHTML = 0;
-                    })
+                    balls = [];
+                    request = 0;
+                    pongReady = false;
+                    document.getElementById("score")?.classList.add("game-over");
+                    playAgainBtn?.classList.add("active");
                 }
             }
 
+            playAgainBtn.addEventListener('click', () => {
+                document.getElementById("score").classList.remove("game-over");
+                playAgainBtn.classList.remove("active");
+                score.innerHTML = 0;
+                balls.push(new Ball(boardWidth + width / 80 + 2, board.getBoundingClientRect().top + board.offsetHeight / 2, width * 0.008, height * 0.018, '#ff6453', width / 80));
+                for (let ball of balls) {
+                    ball.draw();
+                }
+                setTimeout(() => {
+                    pongReady = true;
+                    pongStarted = false;
+                }, 10);
+            })
+
             pongGame.addEventListener("click", () => {
-                if (pongStarted) {
+                if (pongReady && !pongStarted) {
+                    pongStarted = true;
                     animate();
                 }
             })
 
             closeBtn.addEventListener('click', () => {
                 cancelAnimationFrame(request);
+                console.log("close");
             })
 
+
         }
-    }, [isActive, updateGame])
+    }, [isActive])
 
 
 
@@ -203,7 +220,7 @@ const Pong = ({ isActive }) => {
     } else {
         return (
             <div id="pong-game">
-                <video src="pong.mp4" autoPlay loop muted></video>
+                <img src="pong-composed.gif" alt="pong-video-gif"></img>
             </div>
         )
     }

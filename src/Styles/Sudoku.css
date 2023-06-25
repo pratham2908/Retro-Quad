@@ -4,7 +4,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   position: relative;
   transition: all 0.3s ease-in-out;
   transition-property: width, height, left, top;
@@ -14,22 +13,20 @@
 }
 #sudoku-container .difficulty {
   font-family: sans-serif;
-  font-size: 25px;
+  text-align: center;
+  font-size: clamp(0.8rem, 1.6vw, 3.2rem);
   animation: appear-sudoku 0.5s ease-in-out;
   transition: transform 0.5s ease-in-out;
   color: #ff6453;
   text-shadow: 0 0 8px black;
 }
-#sudoku-container .difficulty h1 {
-  margin-bottom: 20px;
-}
 #sudoku-container .difficulty button {
-  font-size: 25px;
+  font-size: clamp(0.8rem, 1.6vw, 3.2rem);
   background-color: #fff;
   border: 1px solid #000;
-  padding: 10px 20px;
+  padding: clamp(0.4rem, 0.7vw, 1.2rem) clamp(0.8rem, 1.2vw, 2.4rem);
   cursor: pointer;
-  margin: 10px 20px;
+  margin: clamp(0.5rem, 1.8vw, 4rem);
   border-radius: 5px;
   box-shadow: 0 0 6px black;
   transition: all 0.2s ease-in-out;
@@ -66,8 +63,8 @@
 }
 #sudoku-container #sudoku > h1 {
   font-family: sans-serif;
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  font-size: clamp(2rem, 2.5vw, 4.8rem);
+  margin-bottom: clamp(5px, 0.8rem, 10px);
   text-align: center;
   text-transform: uppercase;
   text-shadow: 0 0 16px black;
@@ -99,13 +96,14 @@
   border-bottom: 3px solid black;
 }
 #sudoku-container #sudoku .row .box {
-  width: 70px;
-  height: 70px;
+  --size: 70px;
+  width: var(--size);
+  height: var(--size);
   border: 1px solid rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 40px;
+  font-size: calc(var(--size) / 1.8);
   cursor: pointer;
   font-weight: bold;
   font-family: sans-serif;
@@ -127,7 +125,7 @@
   z-index: 1;
   font-family: "Font Awesome 5 Free", sans-serif;
   font-weight: 900;
-  font-size: 30px;
+  font-size: calc(var(--size) / 2.2);
   justify-content: center;
   align-items: center;
   display: none;
@@ -150,7 +148,7 @@
   color: #ff6453;
 }
 #sudoku-container #sudoku .row .box.pencil {
-  font-size: 10px;
+  font-size: calc(var(--size) / 5);
   color: rgba(0, 0, 0, 0.5);
   letter-spacing: 10px;
   word-break: break-all;
@@ -173,10 +171,10 @@
 }
 #sudoku-container .timer {
   font-family: sans-serif;
-  font-size: 20px;
+  font-size: clamp(0.7rem, 1.4vw, 2.8rem);
   position: absolute;
-  left: 20px;
-  top: 20px;
+  left: clamp(10px, 1.2vw, 30px);
+  top: clamp(10px, 1.2vw, 30px);
   display: none;
   z-index: 1;
   color: #ff6453;
@@ -216,5 +214,10 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+@media screen and (max-width: 768px) {
+  #sudoku-container .result {
+    font-size: clamp(0.4rem, 3.5vw, 1.5rem);
   }
 }/*# sourceMappingURL=Sudoku.css.map */

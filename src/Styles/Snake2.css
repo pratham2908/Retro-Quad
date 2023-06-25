@@ -11,6 +11,7 @@
   flex-direction: column;
   background-color: #fff;
   font-family: sans-serif;
+  --size: 50px;
 }
 #snake-container.active {
   z-index: 10;
@@ -28,14 +29,13 @@
   flex-wrap: wrap;
 }
 #snake-container #snake-game .box {
-  width: 50px;
-  height: 50px;
+  width: var(--size);
+  height: var(--size);
   position: relative;
 }
 #snake-container #snake-game .box i {
   display: none;
-  color: 4188de;
-  font-size: 35px;
+  font-size: calc(var(--size) * 0.75);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -59,6 +59,7 @@
 }
 #snake-container #snake-game .box.snake {
   background-color: #5f5;
+  border: 1px solid black;
   position: relative;
   display: flex;
   justify-content: center;
@@ -68,8 +69,8 @@
 #snake-container #snake-game .box.snake::before {
   content: "";
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: clamp(5px, 1vw, 10px);
+  height: clamp(5px, 1vw, 10px);
   background-color: #000;
   border-radius: 50%;
   display: none;
@@ -96,18 +97,12 @@
   border-bottom-left-radius: 50%;
   border-bottom-right-radius: 50%;
 }
-@media (width <= 300px) {
-  #snake-container #snake-game .box {
-    width: 10px;
-    height: 10px;
-  }
-}
 #snake-container .snake-modal {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 500px;
-  height: 350px;
+  width: clamp(300px, 50%, 500px);
+  height: clamp(200px, 50%, 400px);
   border-radius: 10px;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -136,7 +131,6 @@
 }
 #snake-container .snake-modal #snake-game-over button {
   min-width: 100px;
-  height: 50px;
   background-color: #4188de;
   border-radius: 10px;
   color: #fff;
@@ -162,22 +156,21 @@
   color: #4188de;
 }
 #snake-container .snake-modal .start-game > h1 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 2.5vw, 3rem);
   text-shadow: 1px -1px 0 #111, 1px 1px 0 #111;
 }
 #snake-container .snake-modal .start-game .choose-difficulty {
-  font-size: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: clamp(1.5rem, 2vw, 3rem);
   text-transform: uppercase;
   color: #ff6453;
 }
 #snake-container .snake-modal .start-game .choose-difficulty button {
   background-color: #fff;
   color: #000;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.2vw, 2rem);
   cursor: pointer;
   padding: 0.5rem 1rem;
   transition: all 0.3s ease-in-out;
@@ -195,7 +188,7 @@
   color: #fff;
 }
 #snake-container .snake-modal .start-game p {
-  font-size: 25px;
+  font-size: clamp(1rem, 1.5vw, 2rem);
   margin-top: -20px;
   color: #4188de;
   text-shadow: -1px -1px 0 #333;
@@ -207,14 +200,13 @@
   height: 50px;
 }
 #snake-container .snake-modal .start-game #start-btn-snake {
-  height: 50px;
   background-color: #3d85de;
   border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fff;
-  font-size: 20px;
+  font-size: clamp(1rem, 1.5vw, 2rem);
   cursor: pointer;
   padding: 0.5rem 1rem;
   transition: all 0.2s ease-in-out;
@@ -250,8 +242,41 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+@media screen and (max-width: 768px) {
+  #snake-container .snake-modal {
+    height: 40%;
+    width: 70%;
+  }
+}
+@media screen and (max-width: 500px) {
+  #snake-container .snake-modal {
+    width: 90%;
+  }
+  #snake-container .snake-modal .start-game h1 {
+    font-size: clamp(1rem, 8vw, 2rem);
+  }
+  #snake-container .snake-modal .start-game p {
+    font-size: clamp(0.6rem, 5vw, 1.5rem);
+  }
+  #snake-container .snake-modal .start-game .choose-difficulty button {
+    font-size: clamp(0.6rem, 4vw, 1.2rem);
+  }
+  #snake-container .snake-modal #snake-game-over h2 {
+    font-size: clamp(1rem, 8vw, 2rem);
+  }
+  #snake-container .snake-modal #snake-game-over h4 {
+    font-size: clamp(0.8rem, 6vw, 1.5rem);
+  }
+  #snake-container .snake-modal #snake-game-over button {
+    font-size: clamp(0.6rem, 4vw, 1.2rem);
+    min-width: 70px;
+  }
+  #snake-container .snake-modal.game-over {
+    width: 90%;
+  }
+}
 #snake-container .score {
-  font-size: 30px;
+  font-size: clamp(1rem, 1.8vw, 4rem);
   font-weight: 700;
   display: flex;
   justify-content: center;
@@ -260,5 +285,5 @@
 }
 #snake-container .score #score {
   color: #f55;
-  font-size: 40px;
+  font-size: clamp(1.5rem, 2.5vw, 5rem);
 }/*# sourceMappingURL=Snake2.css.map */

@@ -7,6 +7,7 @@ const Sudoku = ({ isActive }) => {
         if (isActive) {
             const container = document.querySelector('#sudoku');
             const sudoku = [];
+            const congratsSound = document.getElementById('congrats');
             let difficulty = null;
 
             function createGrid() {
@@ -118,7 +119,7 @@ const Sudoku = ({ isActive }) => {
                 if (difficulty == "Easy") {
                     removeNumbers(40);
                 } else if (difficulty == "Medium") {
-                    removeNumbers(50);
+                    removeNumbers(1);
                 } else {
                     removeNumbers(60);
                 }
@@ -291,23 +292,42 @@ const Sudoku = ({ isActive }) => {
                 document.querySelector('.timer').style.display = "none";
                 document.querySelector('#sudoku').classList.remove('active');
                 document.querySelector('.result').classList.add('active');
+                congratsSound.play();
+                congratsSound.addEventListener('ended', function () {
+                    this.currentTime = 0;
+                    this.play();
+                }, false);
+
 
                 const timeSplit = time.split(":");
                 displayTime.innerHTML = timeSplit[0] > 0 ? timeSplit[0] + " hours " : "" + timeSplit[1] > 0 ? timeSplit[1] + " minutes " : "" + timeSplit[2] + " seconds";
 
                 const timeToHistory = timeSplit[0] > 0 ? timeSplit[0] + "hr " : "" + timeSplit[1] > 0 ? timeSplit[1] + "m " : "" + timeSplit[2] + "s";
                 updateGame("sudoku", { score: timeToHistory, difficulty: difficulty })
+
             }
 
             document.querySelector("#sudoku-container").addEventListener("click", (e) => {
                 console.log(e.target, e.target.parentNode);
-                if (!e.target.classList.contains("new") && !e.target.parentNode?.classList.contains("new") && !e.target.classList.contains("pencil")) {
-                    document.querySelectorAll(".box").forEach(box => {
-                        box.classList.remove("selected");
-                    }
-                    );
+                if (!e.target.classList.contains("new") && !e.target.parentNode?.classList.contains("new") && !e.target.classList.contains("fa-pencil")) {
+                    document.querySelector(".selected")?.classList.remove("selected");
                 }
             })
+
+            window.addEventListener('resize', () => {
+                changeBoxSize();
+            });
+
+            changeBoxSize();
+
+            function changeBoxSize() {
+                const height = window.innerHeight;
+                const width = window.innerWidth;
+                console.log(height, width);
+                document.querySelectorAll(".box").forEach(box => {
+                    box.style.setProperty("--size", Math.min(height, width) * 4 / 5 / 9 + "px");
+                })
+            }
 
         }
     }, [isActive])
@@ -331,12 +351,13 @@ const Sudoku = ({ isActive }) => {
                     <h1><span>🎉</span>Congratulations<span>🎉</span></h1>
                     <h2>You have completed the game in <span id="time-taken"></span></h2>
                 </div>
+                <audio id="congrats" src="./congrats.mp3"></audio>
             </div>
         )
     } else {
         return (
             <div id="sudoku-container">
-                <img src="./SUDOKU.gif" alt="sudoku gif"></img>
+                <img src="./sudoku2.gif" alt="sudoku gif"></img>
             </div>
         )
     }

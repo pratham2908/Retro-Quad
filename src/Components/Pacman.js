@@ -28,6 +28,7 @@ const Pacman = ({ isActive }) => {
             const pac = pacContainer.querySelector(".pac");
             let firstGame = true;
             let pacStarted = false;
+            let siren = document.getElementById("siren");
 
 
             const dotsArray = [];
@@ -82,8 +83,6 @@ const Pacman = ({ isActive }) => {
                 color: 'yellow'
             }]
             let monsters = [];
-
-
             let request = 0;
 
             playAgainBtn.addEventListener('click', () => {
@@ -124,6 +123,8 @@ const Pacman = ({ isActive }) => {
                 pacGame.style.display = 'block';
                 extraData.style.display = "flex";
                 init();
+                siren.play();
+                siren.setAttribute('loop', 'true');
                 pacStarted = true
                 if (firstGame)
                     animatePac();
@@ -583,6 +584,7 @@ const Pacman = ({ isActive }) => {
                     <div id="play-again-pac">Play Again</div>
                 </div>
                 <div className="start-btn">Start</div>
+                <audio id="siren" src="./siren.mp3"></audio>
             </div>
         )
     }
