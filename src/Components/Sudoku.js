@@ -119,7 +119,7 @@ const Sudoku = ({ isActive }) => {
                 if (difficulty == "Easy") {
                     removeNumbers(40);
                 } else if (difficulty == "Medium") {
-                    removeNumbers(1);
+                    removeNumbers(50);
                 } else {
                     removeNumbers(60);
                 }
@@ -178,7 +178,7 @@ const Sudoku = ({ isActive }) => {
 
             }
 
-            const boxesAll = document.querySelectorAll('.box');
+            let boxesAll = document.querySelectorAll('.box');
 
             boxesAll.forEach(box => {
                 box.addEventListener('click', () => {
@@ -231,6 +231,7 @@ const Sudoku = ({ isActive }) => {
 
             function checkCompletion() {
                 setTimeout(() => {
+                    boxesAll = document.querySelectorAll('.box');
                     for (let i = 0; i < 81; i++) {
                         if (boxesAll[i].textContent == "" || boxesAll[i].classList.contains("pencil")) {
                             return;
@@ -256,7 +257,6 @@ const Sudoku = ({ isActive }) => {
                         }
 
                     }
-                    // console.log("you won")
                     showResult();
                 }, 300);
 
