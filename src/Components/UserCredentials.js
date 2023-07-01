@@ -213,7 +213,7 @@ const UserCredentials = () => {
                     <div id="log-out" onClick={logOut}>Log Out</div>
                 </>)}
             <div id="resize-credentials">
-                <span><i className="fa-solid fa-caret-left fa-beat-fade" ></i><i className="fa-solid fa-caret-right fa-beat-fade" ></i></span>
+                <span><i className="fa-solid fa-caret-left fa-beat-fade" ></i><i className="fa-solid fa-caret-right fa-beat-fade" ></i><i className="fa-solid fa-caret-up fa-beat-fade" ></i><i className="fa-solid fa-caret-down fa-beat-fade" ></i></span>
             </div>
 
             <Toaster toastOptions={{ position: "top-right", style: { fontSize: "1.2rem", fontFamily: "sans-serif", textDecoration: "capitalize", } }} />
