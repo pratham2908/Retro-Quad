@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useContext } from 'react';
 import { DataContext } from "./DataContext";
 
-const Pacman = ({ isActive }) => {
+const Pacman = ({ isActive, isMobile }) => {
     const { updateGame } = useContext(DataContext);
 
     const pacMan = useRef({
@@ -16,7 +16,7 @@ const Pacman = ({ isActive }) => {
 
     useEffect(() => {
 
-        if (isActive) {
+        if (isActive && !isMobile) {
             const pacContainer = document.getElementById("pacman-game");
             const startBtn = pacContainer.querySelector('.start-btn');
             const pacGame = pacContainer.querySelector(".game");
@@ -561,33 +561,40 @@ const Pacman = ({ isActive }) => {
 
     }, [isActive])
 
-    if (!isActive) {
-        return (
-            <div id="pacman-game">
-                <video src="pacman.mp4" autoPlay loop muted></video>
-            </div>
-        )
-    } else {
-        return (
-            <div id="pacman-game">
-                <div className="game">
-                    <div className="pac-map">
-                        <div className="pac">
-                            <div className="pac-mouth">
+    return (
+        <div id="pacman-game" className={isMobile ? "not-compatible" : ""}>
+            {isActive ? (
+                !isMobile ? (
+                    <>
+                        <div className="game">
+                            <div className="pac-map">
+                                <div className="pac">
+                                    <div className="pac-mouth">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div id="extra-data">
-                    <div id="pacman-score">Score : 0</div>
-                    <div id="pacman-lives">Lives: <span><i className='fas fa-heart'></i><i className='fas fa-heart'></i><i className='fas fa-heart'></i></span></div>
-                    <div id="play-again-pac">Play Again</div>
-                </div>
-                <div className="start-btn">Start</div>
-                <audio id="siren" src="./siren.mp3"></audio>
-            </div>
-        )
-    }
+                        <div id="extra-data">
+                            <div id="pacman-score">Score : 0</div>
+                            <div id="pacman-lives">Lives: <span><i className='fas fa-heart'></i><i className='fas fa-heart'></i><i className='fas fa-heart'></i></span></div>
+                            <div id="play-again-pac">Play Again</div>
+                        </div>
+                        <div className="start-btn">Start</div>
+                        <audio id="siren" src="./siren.mp3"></audio>
+                    </>
+                ) : (
+                    <>
+                        <h1>Sorry, This Game is not compatible with mobile devices.</h1>
+                        <h1>Go on a pc device to play this game.</h1>
+                    </>
+                )
+            ) : (
+                <video src="pacman.mp4" autoPlay loop muted></video>
+
+            )}
+        </div>
+    )
+
 }
 
 export default Pacman;

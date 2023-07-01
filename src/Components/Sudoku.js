@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
 import { DataContext } from "./DataContext";
 
-const Sudoku = ({ isActive }) => {
+const Sudoku = ({ isActive, isMobile }) => {
     const { updateGame } = useContext(DataContext);
     useEffect(() => {
-        if (isActive) {
+        if (isActive && !isMobile) {
             const container = document.querySelector('#sudoku');
             const sudoku = [];
             const congratsSound = document.getElementById('congrats');
@@ -333,34 +333,41 @@ const Sudoku = ({ isActive }) => {
     }, [isActive])
 
 
-    if (isActive) {
-        return (
-            <div id="sudoku-container">
-                <div className="difficulty">
-                    <h1>Choose Difficulty</h1>
-                    <button className="easy">Easy</button><button className="medium">Medium</button
-                    ><button className="hard">Hard</button>
-                </div>
-                <div id="sudoku">
-                    <h1 id="difficulty-chosen">Hello</h1>
-                </div>
-                <div className="timer">
-                    <h1><i className="far fa-clock"></i><span id="time">00:00</span></h1>
-                </div>
-                <div className="result">
-                    <h1><span>🎉</span>Congratulations<span>🎉</span></h1>
-                    <h2>You have completed the game in <span id="time-taken"></span></h2>
-                </div>
-                <audio id="congrats" src="./congrats.mp3"></audio>
-            </div>
-        )
-    } else {
-        return (
-            <div id="sudoku-container">
+    return (
+        <div id="sudoku-container" className={isMobile ? "not-compatible" : ""}>
+            {isActive ? (
+                !isMobile ? (
+                    <>
+                        <div className="difficulty">
+                            <h1>Choose Difficulty</h1>
+                            <button className="easy">Easy</button><button className="medium">Medium</button
+                            ><button className="hard">Hard</button>
+                        </div>
+                        <div id="sudoku">
+                            <h1 id="difficulty-chosen">Hello</h1>
+                        </div>
+                        <div className="timer">
+                            <h1><i className="far fa-clock"></i><span id="time">00:00</span></h1>
+                        </div>
+                        <div className="result">
+                            <h1><span>🎉</span>Congratulations<span>🎉</span></h1>
+                            <h2>You have completed the game in <span id="time-taken"></span></h2>
+                        </div>
+                        <audio id="congrats" src="./congrats.mp3"></audio>
+                    </>
+                ) : (
+                    <>
+                        <h1>Sorry, This Game is not compatible with mobile devices.</h1>
+                        <h1>Go on a pc device to play this game.</h1>
+                    </>
+                )
+            ) : (
                 <img src="./sudoku2.gif" alt="sudoku gif"></img>
-            </div>
-        )
-    }
+
+            )}
+        </div>
+    )
+
 }
 
 export default Sudoku;

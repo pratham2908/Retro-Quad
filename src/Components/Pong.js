@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { DataContext } from "./DataContext";
 
-const Pong = ({ isActive }) => {
+const Pong = ({ isActive, isMobile }) => {
     const { updateGame } = useContext(DataContext);
     useEffect(() => {
-        if (isActive) {
+        if (isActive && !isMobile) {
             const ctx = document.getElementById('canvas').getContext('2d');
             const pongGame = document.getElementById('pong-game');
             const startBtnPong = document.getElementById('start-pong');
@@ -194,36 +194,41 @@ const Pong = ({ isActive }) => {
 
 
 
-    if (isActive) {
-        return (
-            <div id="pong-game">
-                <div id="start-pong">Start</div>
-                <div id="boards">
-                    <div className="user">
-                        <div id="user-board"></div>
+    return (
+        <div id="pong-game" className={isMobile ? "not-compatible" : ""}>
+            {isActive ? (
+                !isMobile ? (
+                    <>
+                        <div id="start-pong">Start</div>
+                        <div id="boards">
+                            <div className="user">
+                                <div id="user-board"></div>
 
-                    </div>
-                    <div className="computer">
-                        <div id="computer-board"></div>
-                    </div>
+                            </div>
+                            <div className="computer">
+                                <div id="computer-board"></div>
+                            </div>
 
-                </div>
-                <div id="score">
-                    <h1>Score</h1>
-                    <div id="user-score">0</div>
-                    <button className="play-again-pong">Play Again</button>
-                </div>
-                <canvas id="canvas"></canvas>
-                <audio id="hit" src="hit.mp3"></audio>
-            </div>
-        )
-    } else {
-        return (
-            <div id="pong-game">
+                        </div>
+                        <div id="score">
+                            <h1>Score</h1>
+                            <div id="user-score">0</div>
+                            <button className="play-again-pong">Play Again</button>
+                        </div>
+                        <canvas id="canvas"></canvas>
+                        <audio id="hit" src="hit.mp3"></audio>
+                    </>)
+                    : (
+                        <>
+                            <h1>Sorry, This Game is not compatible with mobile devices.</h1>
+                            <h1>Go on a pc device to play this game.</h1>
+                        </>
+                    )
+            ) : (
                 <img src="pong-composed.gif" alt="pong-video-gif"></img>
-            </div>
-        )
-    }
+            )}
+        </div>)
+
 }
 
 export default Pong;

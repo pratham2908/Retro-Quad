@@ -6,8 +6,11 @@ import "./Styles/Pacman.css"
 import DataContextProvider from './Components/DataContext';
 import Games from './Components/Games';
 import UserCredentials from './Components/UserCredentials';
+import { useEffect, useRef, useState } from 'react';
 
 function App() {
+
+
 
   return (
     <DataContextProvider>

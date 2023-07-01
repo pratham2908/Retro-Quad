@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { DataContext } from "./DataContext";
 
-const Snake = ({ isActive }) => {
+const Snake = ({ isActive, isMobile }) => {
     const { updateGame } = useContext(DataContext);
     useEffect(() => {
-        if (isActive) {
+        if (isActive && !isMobile) {
             const container = document.querySelector("#snake-game");
             const startBtnSnake = document.querySelector("#start-btn-snake");
             const sound = document.querySelector("#eat");
@@ -204,44 +204,51 @@ const Snake = ({ isActive }) => {
         }
     }, [isActive])
 
-    if (isActive) {
-        return (
-            <div id="snake-container">
-                <div className="score">
-                    <h2>Score</h2>
-                    <p id="score">0</p>
-                </div>
-                <div id="snake-game"></div>
-                <div className="snake-modal active">
-                    <div className="start-game">
-                        <h1>Welcome to Snake</h1>
-                        <div className="choose-difficulty">
-                            <button>Easy</button>
-                            <button>Medium</button>
-                            <button>Hard</button>
+    return (
+        <div id="snake-container" className={isMobile ? "not-compatible" : ""}>
+            {isActive ? (
+                !isMobile ? (
+                    <>
+                        <div className="score">
+                            <h2>Score</h2>
+                            <p id="score">0</p>
                         </div>
-                        <p>
-                            Use the
-                            <img src="arrow-keys-2.png" alt="arrow-keys" /> keys to move the snake
-                        </p>
-                        <button id="start-btn-snake">Start Game</button>
-                    </div>
-                    <div id="snake-game-over">
-                        <h2>Game Over</h2>
-                        <h4>Your Score was <span></span></h4>
-                        <button >Play Again</button>
-                    </div>
-                </div>
-                <audio id="eat" src="eat.mp3"></audio>
-            </div>
-        )
-    } else {
-        return (
-            <div id="snake-container">
+                        <div id="snake-game"></div>
+                        <div className="snake-modal active">
+                            <div className="start-game">
+                                <h1>Welcome to Snake</h1>
+                                <div className="choose-difficulty">
+                                    <button>Easy</button>
+                                    <button>Medium</button>
+                                    <button>Hard</button>
+                                </div>
+                                <p>
+                                    Use the
+                                    <img src="arrow-keys-2.png" alt="arrow-keys" /> keys to move the snake
+                                </p>
+                                <button id="start-btn-snake">Start Game</button>
+                            </div>
+                            <div id="snake-game-over">
+                                <h2>Game Over</h2>
+                                <h4>Your Score was <span></span></h4>
+                                <button >Play Again</button>
+                            </div>
+                        </div>
+                        <audio id="eat" src="eat.mp3"></audio>
+                    </>
+                ) : (
+                    <>
+                        <h1>Sorry, This Game is not compatible with mobile devices.</h1>
+                        <h1>Go on a pc device to play this game.</h1>
+                    </>
+                )
+            ) : (
                 <video src="snake.mp4" autoPlay loop muted ></video>
-            </div>
-        )
-    }
+
+            )}
+        </div>
+    )
+
 }
 
 
