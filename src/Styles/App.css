@@ -43,6 +43,7 @@ body {
 .App #games > *.not-compatible > * {
   background-color: transparent;
   color: white;
+  font-size: clamp(0.8rem, 2.5vw, 5rem);
 }
 .App #games > * video {
   width: 100%;

@@ -43,6 +43,7 @@ body {
         > * {
           background-color: transparent;
           color: white;
+          font-size: clamp(0.8rem, 2.5vw, 5rem);
         }
       }
 
