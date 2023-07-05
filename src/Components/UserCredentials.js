@@ -222,9 +222,7 @@ const UserCredentials = () => {
                     padding: toastPadding,
                     borderRadius: toastSize / 2, fontFamily: "sans-serif",
                     textDecoration: "capitalize",
-
                 },
-                duration: 1000000,
 
             }} />
         </div>

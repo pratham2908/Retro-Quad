@@ -84,12 +84,7 @@ const DataContextProvider = (props) => {
                     padding: toastPadding,
                     borderRadius: toastSize / 2, fontFamily: "sans-serif",
                     textDecoration: "capitalize",
-
                 },
-
-
-                duration: 1000000,
-
             }} />
         </DataContext.Provider>
     )
