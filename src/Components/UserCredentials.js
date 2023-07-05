@@ -32,6 +32,7 @@ const UserCredentials = () => {
                     position: "top-right"
                 });
             } else {
+                toast.dismiss();
                 toast.error(data);
                 document.querySelector(".register .warning").innerHTML = data;
             }
@@ -67,6 +68,7 @@ const UserCredentials = () => {
                     position: "top-right"
                 })
             } else {
+                toast.dismiss();
                 toast.error(data);
                 document.querySelector(".login .warning").innerHTML = data;
             }
