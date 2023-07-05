@@ -245,7 +245,7 @@ body {
 }
 .App #user-credentials .games-history .game-data > div {
   box-shadow: 0 0 6px 1px rgba(65, 136, 222, 0.6);
-  font-size: clamp(0.25rem, 1vw, 2.5rem);
+  font-size: clamp(0.5rem, 1vw, 2.5rem);
   margin: clamp(0.4rem, 0.8vw, 1.5rem) 0;
   padding: clamp(0.4rem, 0.8vw, 1.5rem);
   border-radius: clamp(0.25rem, 0.5vw, 1rem);
