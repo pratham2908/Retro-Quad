@@ -3,7 +3,7 @@ import { DataContext } from "./DataContext";
 import toast, { Toaster } from 'react-hot-toast';
 
 const UserCredentials = () => {
-    const { user, setUser } = useContext(DataContext);
+    const { user, setUser, toastSize, toastPadding } = useContext(DataContext);
     let applied = useRef(false);
 
     function registerUser(e) {
@@ -67,7 +67,7 @@ const UserCredentials = () => {
                     position: "top-right"
                 })
             } else {
-                toast.success(data);
+                toast.error(data);
                 document.querySelector(".login .warning").innerHTML = data;
             }
             document.querySelector(".loading-screen").classList.remove("active");
@@ -122,8 +122,7 @@ const UserCredentials = () => {
         } else {
             setTimeout(() => {
                 toast.dismiss();
-                toast.error("No user data found")
-                toast("Please login or register")
+                toast.error("No user data found, Please Login or Register")
                 document.querySelector(".loading-screen").classList.remove("active");
 
             }, 1000)
@@ -216,7 +215,18 @@ const UserCredentials = () => {
                 <span><i className="fa-solid fa-caret-left fa-beat-fade" ></i><i className="fa-solid fa-caret-right fa-beat-fade" ></i><i className="fa-solid fa-caret-up fa-beat-fade" ></i><i className="fa-solid fa-caret-down fa-beat-fade" ></i></span>
             </div>
 
-            <Toaster toastOptions={{ position: "top-right", style: { fontSize: "1.2rem", fontFamily: "sans-serif", textDecoration: "capitalize", } }} />
+            <Toaster toastOptions={{
+                position: "top-right",
+                style: {
+                    fontSize: toastSize,
+                    padding: toastPadding,
+                    borderRadius: toastSize / 2, fontFamily: "sans-serif",
+                    textDecoration: "capitalize",
+
+                },
+                duration: 1000000,
+
+            }} />
         </div>
     )
 

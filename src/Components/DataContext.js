@@ -8,6 +8,8 @@ const DataContextProvider = (props) => {
     const [currGame, setCurrGame] = useState('');
     const [user, setUser] = useState();
     const games = ['sudoku', 'snake', 'pacman', 'pong'];
+    const [toastSize, setToastSize] = useState("1.2rem");
+    const [toastPadding, setToastPadding] = useState("0.6rem");
 
 
     function changeGame(index) {
@@ -57,11 +59,38 @@ const DataContextProvider = (props) => {
         })
     }
 
+    useEffect(() => {
+        let width = window.innerWidth * 1.2;
+        if (width < 800) width = 800;
+        setToastSize(width / 80 + "px");
+        setToastPadding(window.innerWidth / 150 + "px");
+
+        window.addEventListener("resize", () => {
+            width = window.innerWidth;
+            if (width < 800) width = 800;
+            setToastSize(width / 80 + "px");
+            setToastPadding(window.innerWidth / 150 + "px");
+        })
+    }, [])
+
     return (
-        <DataContext.Provider value={{ currGame, setCurrGame, changeGame, user, setUser, updateGame }}>
+        <DataContext.Provider value={{ currGame, setCurrGame, changeGame, user, setUser, updateGame, toastSize, toastPadding }}>
 
             {props.children}
-            <Toaster toastOptions={{ position: "top-right", style: { fontSize: "1.2rem", fontFamily: "sans-serif", textDecoration: "capitalize", } }} />
+            <Toaster toastOptions={{
+                position: "top-right",
+                style: {
+                    fontSize: toastSize,
+                    padding: toastPadding,
+                    borderRadius: toastSize / 2, fontFamily: "sans-serif",
+                    textDecoration: "capitalize",
+
+                },
+
+
+                duration: 1000000,
+
+            }} />
         </DataContext.Provider>
     )
 }

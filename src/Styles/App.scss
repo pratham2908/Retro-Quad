@@ -145,7 +145,6 @@ body {
           padding: clamp(0.5rem, 0.6vw, 2rem);
           font-size: clamp(0.6rem, 1vw, 3rem);
           border-radius: 5px;
-          border: 1px solid #222;
           outline: none;
           transition: all 0.3s ease-in-out;
           border: 2px solid #999;
@@ -167,6 +166,7 @@ body {
           background-color: #4188de;
           color: #fff;
           transition: all 0.3s ease-in-out;
+          max-width: 50%;
 
           &:hover {
             background-color: #fff;
@@ -393,6 +393,35 @@ body {
       .games-history {
         height: 100%;
         max-width: 50%;
+      }
+
+      .register,
+      .login {
+        gap: clamp(0.2rem, 0.5vw, 0.4rem);
+
+        > h1 {
+          font-size: clamp(0.8rem, 1vw, 1rem);
+        }
+        form {
+          gap: clamp(0.2rem, 0.5vw, 1rem);
+
+          input {
+            padding: clamp(0.3rem, 0.8vw, 0.5rem);
+            border-width: 1px;
+          }
+
+          button {
+            padding: clamp(0.25rem, 1vw, 0.5rem);
+            max-width: 100%;
+          }
+        }
+      }
+
+      .register {
+        gap: 0;
+        form {
+          gap: clamp(0rem, 0.3vw, 0.2rem);
+        }
       }
 
       #resize-credentials {
